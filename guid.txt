@@ -1,0 +1,8 @@
+Bước 1: Khởi tạo dự án NestJS
+
+Cài đặt @nestjs/mongoose, mongoose để kết nối với MongoDB:
+
+npm install @nestjs/mongoose mongoose
+
+Kết nối MongoDB trong ứng dụng
+Mở file app.module.ts và thêm cấu hình Mongoose:
