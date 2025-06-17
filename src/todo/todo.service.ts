@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Todo, TodoDocument } from './todo.schema';
+import { skip } from 'node:test';
 
 @Injectable()
 export class TodoService {
@@ -27,7 +28,7 @@ export class TodoService {
     await this.todoModel.findByIdAndDelete(id);
   }
 
-  async search(status?: boolean, title?: string): Promise<Todo[]> {
+  async search(status?: boolean, title?: string, page: number = 1, limit: number = 2,): Promise<Todo[]> {
     const query: any = {};
 
     if (status !== undefined) {
@@ -38,7 +39,11 @@ export class TodoService {
       query.title = { $regex: title, $options: 'i' }; 
     }
 
-    return this.todoModel.find(query);
+    const skip = (page - 1) * limit;
+    const todo = await this.todoModel.find(query).skip(skip).limit(limit)
+
+    // return this.todoModel.find(query);
+    return todo;
   }
 
 }
