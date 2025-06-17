@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './todo.schema';
 
@@ -13,6 +13,12 @@ export class TodoController {
     @Get(':id')
     async findOne(@Param('id') id: string) {
         return this.todoService.findOne(id);
+    }
+
+       @Get('search')
+    async search(@Query('status') status: string, @Query('title') title: string) {
+        const boolStatus = status !== undefined ? status === "true" : undefined;
+        return this.todoService.search(boolStatus, title);
     }
 
     @Post()
