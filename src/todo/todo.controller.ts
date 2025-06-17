@@ -30,9 +30,9 @@ export class TodoController {
 
   //lấy tất cả công việc 
   @Get()
-  @ApiOperation({ summary: 'Tat ca cong viec' })
+  @ApiOperation({ summary: 'TẤT CẢ CÔNG VIỆC' })
   @ApiOkResponse({
-    description: 'Danh sach cong viec',
+    description: 'DANH SÁCH TỔNG HỢP',
     type: [Todo],
   })
   //lấy tất cả công việc 
@@ -43,33 +43,33 @@ export class TodoController {
 
   //Tìm kiếm và lọc
   @Get('search')
-  @ApiOperation({ summary: 'Tim kiem voi phan trang' })
+  @ApiOperation({ summary: 'TÌM KIẾM VÀ PHÂN TRANG' })
   @ApiQuery({
     name: 'status',
     required: false,
-    description: 'Loc theo trang thai (true/false)',
+    description: 'LỌC THEO TRANG THÁI (true/false)',
     example: 'true',
   })
   @ApiQuery({
     name: 'title',
     required: false,
-    description: 'Loc theo tieu de cong viec',
+    description: 'LỌC THEO TIÊU ĐỀ',
     example: 'shopping',
   })
   @ApiQuery({
     name: 'page',
     required: false,
-    description: 'So trang',
+    description: 'SỐ TRANG',
     example: '1',
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    description: 'So luong Item moi trang',
+    description: 'SỐ LƯỢNG CV MỖI TRANG',
     example: '10',
   })
   @ApiOkResponse({
-    description: 'Ket qua phan trang tim kiem',
+    description: 'PHÂN TRANG - KẾT QUẢ',
     type: [Todo],
   })
 
@@ -89,19 +89,19 @@ export class TodoController {
 
   //Tìm kiếm theo ID
   @Get(':id')
-  @ApiOperation({ summary: 'Tim theo ID' })
+  @ApiOperation({ summary: 'TÌM THEO ID' })
   @ApiParam({
     name: 'id',
     description: 'Todo ID',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiOkResponse({
-    description: 'Ket qua tim kiem cho: ',
+    description: 'KẾT QUẢ: ',
     type: Todo,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Khong tim thay',
+    description: 'KHÔNG TÌM THẤY',
   })
 //Tìm kiếm theo ID
   
@@ -112,17 +112,17 @@ export class TodoController {
 
   //Thêm 
   @Post()
-  @ApiOperation({ summary: 'Them cong viec moi' })
+  @ApiOperation({ summary: 'THÊM CV MỚI' })
   @ApiBody({
     type: CreateTodoDTo,
-    description: 'Tao du lieu cong viec',
+    description: 'THÊM CV',
     examples: {
       basic: {
         summary: 'Basic todo',
         value: { title: 'Buy groceries' },
       },
       withDescription: {
-        summary: 'Mo ta cong viec',
+        summary: 'MÔ TẢ',
         value: {
           title: 'Learn NestJS',
           description: 'Study Swagger integration',
@@ -131,12 +131,12 @@ export class TodoController {
     },
   })
   @ApiCreatedResponse({
-    description: 'Them thanh cong',
+    description: 'THÊM OK',
     type: Todo,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Du lieu khong hop le',
+    description: 'NHẬP SAI',
   })
   //Thêm
   @Post()
@@ -148,30 +148,30 @@ export class TodoController {
 
   //update
   @Put(':id')
-  @ApiOperation({ summary: 'Update a todo' })
+  @ApiOperation({ summary: 'CẬP NHẬT 1 CV' })
   @ApiParam({
     name: 'id',
-    description: 'Cong viec cap nhat theo ID',
+    description: 'CẬP NHẬT THEO ID',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiBody({
-    description: 'Cap nhat cong viec',
+    description: 'CẬP NHẬT',
     schema: {
       type: 'object',
       properties: {
-        title: { type: 'string', example: 'Cap nhat tieu de cong viec' },
+        title: { type: 'string', example: 'CẬP NHẬT TIÊU ĐỀ' },
         completed: { type: 'boolean', example: true },
       },
       required: ['title', 'completed'],
     },
   })
   @ApiOkResponse({
-    description: 'Cap nhat thanh cong',
+    description: 'CẬP NHẬT OK',
     type: Todo,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Todo not found',
+    description: 'KHÔNG TÌM THẤY',
   })
 
   //update
@@ -185,18 +185,18 @@ export class TodoController {
 
   //delete
   @Delete(':id')
-  @ApiOperation({ summary: 'Xoa 1 cong viec' })
+  @ApiOperation({ summary: 'XÓA 1' })
   @ApiParam({
     name: 'id',
-    description: 'Xoa cong viec theo ID',
+    description: 'XÓA THEO ID',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiOkResponse({
-    description: 'Xoa thanh cong',
+    description: 'XOA OK',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Todo not found',
+    description: 'KHÔNG TÌM THẤY',
   })
   //delete
   @Delete(':id')
