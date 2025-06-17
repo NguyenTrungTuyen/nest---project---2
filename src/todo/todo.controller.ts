@@ -19,17 +19,17 @@ export class TodoController {
     return this.todoService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.todoService.findOne(id);
-  }
-
+  
   @Get('search')
   async search(@Query('status') status: string, @Query('title') title: string) {
-    const boolStatus = status !== undefined ? status === 'true' : undefined;
-    return this.todoService.search(boolStatus, title);
-  }
-
+      const boolStatus = status !== undefined ? status === 'true' : undefined;
+      return this.todoService.search(boolStatus, title);
+    }
+    
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+      return this.todoService.findOne(id);
+    }
   @Post()
   async create(
     @Body() body: { title: string; description?: string },

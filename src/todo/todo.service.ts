@@ -27,18 +27,15 @@ export class TodoService {
     await this.todoModel.findByIdAndDelete(id);
   }
 
-  // tìm kiếm theo title và lọc theo completed 
   async search(status?: boolean, title?: string): Promise<Todo[]> {
     const query: any = {};
 
-    // Lọc theo trạng thái (nếu có)
     if (status !== undefined) {
       query.completed = status;
     }
 
-    // Lọc theo title (tìm kiếm gần đúng, không phân biệt hoa thường)
     if (title) {
-      query.title = { $regex: title, $options: 'i' }; // 'i' để không phân biệt hoa thường
+      query.title = { $regex: title, $options: 'i' }; 
     }
 
     return this.todoModel.find(query);
