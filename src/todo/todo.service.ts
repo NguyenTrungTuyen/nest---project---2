@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Todo, TodoDocument } from './todo.schema';
 import { skip } from 'node:test';
 
@@ -20,7 +20,7 @@ export class TodoService {
     return this.todoModel.findById(id);
   }
 
-  async update(id: string, data: { title: string; completed: boolean }){
+  async update(id: string, data: { title: string; completed: boolean }) {
     return this.todoModel.findByIdAndUpdate(id, data, { new: true });
   }
 
@@ -28,22 +28,51 @@ export class TodoService {
     await this.todoModel.findByIdAndDelete(id);
   }
 
-  async search(status?: boolean, title?: string, page: number = 1, limit: number = 2,): Promise<Todo[]> {
+  async search(
+    status?: boolean,
+    title?: string,
+    cursor?: string,
+    limit: number = 2,
+  ): Promise<{
+    todos: TodoDocument[];
+    totalItems: number;
+    nextCursor: string | null;
+  }> {
     const query: any = {};
 
+    // Áp dụng bộ lọc status và title
     if (status !== undefined) {
       query.completed = status;
     }
-
     if (title) {
-      query.title = { $regex: title, $options: 'i' }; 
+      query.title = { $regex: title, $options: 'i' };
     }
 
-    const skip = (page - 1) * limit;
-    const todo = await this.todoModel.find(query).skip(skip).limit(limit)
+    // Nếu có cursor, thêm điều kiện để lấy các document sau cursor
+    if (cursor) {
+      query._id = { $gt: new Types.ObjectId(cursor) };
+    }
 
-    // return this.todoModel.find(query);
-    return todo;
+    // Lấy danh sách todos với limit và sắp xếp theo _id tăng dần
+    const todos: TodoDocument[] = await this.todoModel
+      .find(query)
+      .sort({ _id: 1 }) // Sắp xếp theo _id để đảm bảo thứ tự nhất quán
+      .limit(limit);
+
+    // Đếm tổng số todos khớp với bộ lọc (không tính cursor)
+    const totalQuery = { ...query };
+    if (totalQuery._id) {
+      delete totalQuery._id; // Loại bỏ điều kiện cursor để đếm tổng
+    }
+    const totalItems = await this.todoModel.countDocuments(totalQuery);
+
+    // Xác định nextCursor: _id của document cuối cùng (nếu có)
+    const nextCursor = todos.length > 0 ? todos[todos.length - 1]._id.toString() : null;
+
+    return {
+      todos,
+      totalItems,
+      nextCursor,
+    };
   }
-
 }

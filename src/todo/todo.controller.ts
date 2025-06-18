@@ -8,10 +8,13 @@ import {
   Body,
   Query,
   HttpStatus,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './todo.schema';
+import { SearchTodoDto } from './tdo/SearchTodo.tdo';
 import { CreateTodoDTo } from './tdo/create.tdo';
+
 import {
   ApiTags,
   ApiOperation,
@@ -28,14 +31,14 @@ import {
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
-  //lấy tất cả công việc 
+  //lấy tất cả công việc
   @Get()
   @ApiOperation({ summary: 'TẤT CẢ CÔNG VIỆC' })
   @ApiOkResponse({
     description: 'DANH SÁCH TỔNG HỢP',
     type: [Todo],
   })
-  //lấy tất cả công việc 
+  //lấy tất cả công việc
   @Get()
   async findAll(): Promise<Todo[]> {
     return this.todoService.findAll();
@@ -43,11 +46,11 @@ export class TodoController {
 
   //Tìm kiếm và lọc
   @Get('search')
-  @ApiOperation({ summary: 'TÌM KIẾM VÀ PHÂN TRANG' })
+  @ApiOperation({ summary: 'TÌM KIẾM VÀ PHÂN TRANG THEO CURSOR' })
   @ApiQuery({
     name: 'status',
     required: false,
-    description: 'LỌC THEO TRANG THÁI (true/false)',
+    description: 'LỌC THEO TRẠNG THÁI (true/false)',
     example: 'true',
   })
   @ApiQuery({
@@ -57,34 +60,49 @@ export class TodoController {
     example: 'shopping',
   })
   @ApiQuery({
-    name: 'page',
+    name: 'cursor',
     required: false,
-    description: 'SỐ TRANG',
-    example: '1',
+    description: 'CURSOR (_id CỦA TASK CUỐI CÙNG) ĐỂ LẤY TRANG TIẾP THEO',
+    example: '66c123456789abcdef123456',
   })
   @ApiQuery({
     name: 'limit',
     required: false,
-    description: 'SỐ LƯỢNG CV MỖI TRANG',
-    example: '10',
+    description: 'SỐ LƯỢNG TASK MỖI TRANG',
+    example: 5,
   })
   @ApiOkResponse({
-    description: 'PHÂN TRANG - KẾT QUẢ',
-    type: [Todo],
+    description: 'PHÂN TRANG THEO CURSOR - KẾT QUẢ',
+    schema: {
+      type: 'object',
+      properties: {
+        todos: { type: 'array', items: { $ref: '#/components/schemas/Todo' } },
+        totalItems: { type: 'number', example: 20 },
+        nextCursor: {
+          type: 'string',
+          nullable: true,
+          example: '66c123456789abcdef123456',
+        },
+      },
+    },
   })
-
   //Tìm kiếm và lọc
-  @Get('search')
   async search(
-    @Query('status') status: string,
-    @Query('title') title: string,
-    @Query('page') page: string,
-    @Query('limit') limit: string,
-  ) {
-    const boolStatus = status !== undefined ? status === 'true' : undefined;
-    const pageNumber = page ? parseInt(page, 10) : 1;
-    const limitNumber = limit ? parseInt(limit, 10) : 5;
-    return this.todoService.search(boolStatus, title, pageNumber, limitNumber);
+    @Query(ValidationPipe) query: SearchTodoDto): Promise<{
+    todos: Todo[];
+    totalItems: number;
+    nextCursor: string | null;
+  }> {
+    const boolStatus =
+      query.status !== undefined ? query.status === 'true' : undefined;
+    const limitNumber = query.limit || 5;
+
+    return this.todoService.search(
+      boolStatus,
+      query.title,
+      query.cursor,
+      limitNumber,
+    );
   }
 
   //Tìm kiếm theo ID
@@ -103,14 +121,13 @@ export class TodoController {
     status: HttpStatus.NOT_FOUND,
     description: 'KHÔNG TÌM THẤY',
   })
-//Tìm kiếm theo ID
-  
+  //Tìm kiếm theo ID
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.todoService.findOne(id);
   }
 
-  //Thêm 
+  //Thêm
   @Post()
   @ApiOperation({ summary: 'THÊM CV MỚI' })
   @ApiBody({
