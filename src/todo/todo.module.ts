@@ -3,7 +3,7 @@ import { TodoController } from './todo.controller';
 import { TodoService } from './todo.service';
 
 import { MongooseModule } from '@nestjs/mongoose';
-import { Todo, TodoSchema } from './todo.schema';
+import { Todo, TodoSchema } from './schema/todo.schema';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Todo.name, schema: TodoSchema }])],

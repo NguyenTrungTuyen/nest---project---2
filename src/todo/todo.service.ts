@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Todo, TodoDocument } from './todo.schema';
+import { Todo, TodoDocument } from './schema/todo.schema';
 import { skip } from 'node:test';
 
 @Injectable()

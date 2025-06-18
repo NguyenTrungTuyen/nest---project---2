@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { Todo } from './todo.schema';
+import { Todo } from './schema/todo.schema';
 import { SearchTodoDto } from './tdo/SearchTodo.tdo';
 import { CreateTodoDTo } from './tdo/create.tdo';
 
