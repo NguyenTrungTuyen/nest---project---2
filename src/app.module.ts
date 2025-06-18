@@ -11,7 +11,7 @@ import { TodoModule } from './todo/todo.module';
   imports: [
     //  MongooseModule.forRoot('mongodb://localhost:27017/todo'),
      ConfigModule.forRoot({ isGlobal: true }), 
-     MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/todos'),
+     MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/todo'),
      TodoModule,
   ],
   controllers: [AppController],

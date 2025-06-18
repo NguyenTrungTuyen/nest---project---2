@@ -54,10 +54,11 @@ export class TodoService {
     }
 
     // Lấy danh sách todos với limit và sắp xếp theo _id tăng dần
-    const todos: TodoDocument[] = await this.todoModel
+    const todos = await this.todoModel
       .find(query)
-      .sort({ _id: 1 }) // Sắp xếp theo _id để đảm bảo thứ tự nhất quán
-      .limit(limit);
+      .sort({ _id: 1 })
+      .limit(limit)
+      .exec() as TodoDocument[];
 
     // Đếm tổng số todos khớp với bộ lọc (không tính cursor)
     const totalQuery = { ...query };

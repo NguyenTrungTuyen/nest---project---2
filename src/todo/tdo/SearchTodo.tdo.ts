@@ -14,7 +14,7 @@ export class SearchTodoDto {
   cursor?: string;
 
   @IsOptional()
-  @IsInt()
-  @Min(1)
+//   @IsInt()
+//   @Min(1)
   limit?: number;
 }

@@ -14,7 +14,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 // khởi tạo Swagger
-
+   console.log('MONGODB_URI:', process.env.MONGODB_URI);
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
