@@ -10,19 +10,16 @@ export class Todo {
   _id: Types.ObjectId;
 
   @Prop({ required: true })
-  title: string;
+  name: string;
 
-  @Prop()
-  description: string;
+  @Prop({ required: false })
+  gender: string;
 
-  @Prop({ default: false })
-  completed: boolean;
+  @Prop({ required: false })
+  old: number;
 
-  // @Prop()
-  // userName: string;
-
-  // @Prop()
-  // passWord: string;
+  @Prop({ required: true })
+  pass: string;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);
